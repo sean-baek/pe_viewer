@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 	}
 	
 	// 파일의 크기를 구하고 내용을 읽는다.
-	if (get_file_content(file, &buf, file_size) < 0)
+	if (get_file_content(file, &buf, &file_size) < 0)
 	{
 		printf("파일의 내용을 읽어올 수 없습니다.\n%s\n", strerror(errno));
 		return -1;

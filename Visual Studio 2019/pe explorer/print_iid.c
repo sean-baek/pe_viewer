@@ -16,20 +16,20 @@ void print_image_import_descriptor(FILE* fp, u_char** buf, IMAGE_IMPORT_DESCRIPT
 		if (piid->Characteristics == 0x00000000 && piid->OriginalFirstThunk == 0x00000000 && piid->TimeDateStamp == 0x00000000 && piid->ForwarderChain == 0x00000000 && piid->Name == 0x00000000 && piid->FirstThunk == 0x00000000)
 			break;
 
-		printf("[%08X] - OriginalFirstThunk[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->OriginalFirstThunk), piid->OriginalFirstThunk, rva_to_raw_dword(fp, buf, piid->OriginalFirstThunk));
+		printf("[%08X] - OriginalFirstThunk[%dbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->OriginalFirstThunk), piid->OriginalFirstThunk, rva_to_raw_dword(fp, buf, piid->OriginalFirstThunk));
 		offset = get_file_offset(fp, sizeof(piid->OriginalFirstThunk));
 
-		printf("[%08X] - TimeDateStamp[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->TimeDateStamp), piid->TimeDateStamp, rva_to_raw_dword(fp, buf, piid->TimeDateStamp));
+		printf("[%08X] - TimeDateStamp[%dbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->TimeDateStamp), piid->TimeDateStamp, rva_to_raw_dword(fp, buf, piid->TimeDateStamp));
 		offset = get_file_offset(fp, sizeof(piid->TimeDateStamp));
 
-		printf("[%08X] - ForwarderChain[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->ForwarderChain), piid->ForwarderChain, rva_to_raw_dword(fp, buf, piid->ForwarderChain));
+		printf("[%08X] - ForwarderChain[%dbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->ForwarderChain), piid->ForwarderChain, rva_to_raw_dword(fp, buf, piid->ForwarderChain));
 		offset = get_file_offset(fp, sizeof(piid->ForwarderChain));
 
 		raw = rva_to_raw_dword(fp, buf, piid->Name);
-		printf("[%08X] - Name[%zdbyte]\t\t: %08X(RVA), %08X(RAW), %s\n", offset, sizeof(piid->Name), piid->Name, raw, *buf + raw);
+		printf("[%08X] - Name[%dbyte]\t\t: %08X(RVA), %08X(RAW), %s\n", offset, sizeof(piid->Name), piid->Name, raw, *buf + raw);
 		offset = get_file_offset(fp, sizeof(piid->Name));
 
-		printf("[%08X] - FirstThunk[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n\n", offset, sizeof(piid->FirstThunk), piid->FirstThunk, rva_to_raw_dword(fp, buf, piid->FirstThunk));
+		printf("[%08X] - FirstThunk[%dbyte]\t\t: %08X(RVA), %08X(RAW)\n\n", offset, sizeof(piid->FirstThunk), piid->FirstThunk, rva_to_raw_dword(fp, buf, piid->FirstThunk));
 		offset = get_file_offset(fp, sizeof(piid->FirstThunk));
 
 		printf("-----------------------------------------------\n\n");

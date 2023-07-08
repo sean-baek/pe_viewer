@@ -29,5 +29,12 @@ int get_file_size(FILE* fp)
 		return -1;
 	}*/
 
+	// 파일 사이즈 구하기 실패 했을 때	
+	if (size <= 0)
+	{
+		printf("파일 사이즈를 구하는 데 실패했습니다.\n");
+		return -1;
+	}
+
 	return size;
 }

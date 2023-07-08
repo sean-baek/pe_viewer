@@ -21,8 +21,11 @@ int main(int argc, char** argv)
 	}
 	
 	// 파일의 크기를 구하고 내용을 읽는다.
-	// 반환값은 파일의 사이즈이다.
-	file_size = get_file_content(file, &buf);
+	if (get_file_content(file, &buf, &file_size) < 0)
+	{
+		printf("파일의 내용을 읽어올 수 없습니다.\n%s\n", strerror(errno));
+		return -1;
+	}
 
 	/* dos header */
 	IMAGE_DOS_HEADER* idh = (IMAGE_DOS_HEADER*)buf;
@@ -39,9 +42,6 @@ int main(int argc, char** argv)
 	/* Section header : NT header 구조체의 시작 부분 + 4byte + file header 크기 + sizeofOptionalheader의 값 한 offset */
 	IMAGE_SECTION_HEADER* ish = (IMAGE_SECTION_HEADER*)(buf + idh->e_lfanew + sizeof(inh->Signature) + sizeof(inh->FileHeader) + inh->FileHeader.SizeOfOptionalHeader);
 	
-
-	/* todo */
-
 	// 프로그램이 dos 파일인지 검사
 	if ((idh->e_magic != IMAGE_DOS_SIGNATURE) || (inh->Signature != IMAGE_NT_SIGNATURE))
 	{
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
 
 
 		// 파일 포인터를 Section header 위치로 이동
-		offset = set_file_offset(file, (idh->e_lfanew + sizeof(inh32->Signature) + sizeof(inh32->FileHeader) + inh32->FileHeader.SizeOfOptionalHeader));		
+		//offset = set_file_offset(file, (idh->e_lfanew + sizeof(inh32->Signature) + sizeof(inh32->FileHeader) + inh32->FileHeader.SizeOfOptionalHeader));		
 		// print_section_header()에서 for문에 사용될 section 개수 구하기
 		WORD section_num = inh32->FileHeader.NumberOfSections;
 		/* Section header */
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
 		// IID 구조체 배열의 크기
 		int import_descriptor_size = inh32->OptionalHeader.DataDirectory[1].Size / sizeof(IMAGE_IMPORT_DESCRIPTOR);
 		// IID 구조체 값 출력
-		offset = set_file_offset(file, raw);
+		//offset = set_file_offset(file, raw);
 		print_image_import_descriptor(file, &buf, iid, import_descriptor_size);
 		printf("===============================================\n\n");
 
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);
 			int export_directory_size = inh32->OptionalHeader.DataDirectory[0].Size / sizeof(IMAGE_EXPORT_DIRECTORY);
-			offset = set_file_offset(file, raw);
+			//offset = set_file_offset(file, raw);
 			print_image_export_directory(file, &buf, ied);
 		}
 		printf("\n==============================================\n\n");
@@ -135,7 +135,7 @@ int main(int argc, char** argv)
 
 
 		// 파일 포인터를 Section header 위치로 이동
-		offset = set_file_offset(file, idh->e_lfanew + sizeof(inh64->Signature) + sizeof(inh64->FileHeader) + inh64->FileHeader.SizeOfOptionalHeader);
+		//offset = set_file_offset(file, idh->e_lfanew + sizeof(inh64->Signature) + sizeof(inh64->FileHeader) + inh64->FileHeader.SizeOfOptionalHeader);
 		// print_section_header()에서 for문에 사용될 section 개수 구하기
 		WORD section_num = inh64->FileHeader.NumberOfSections;
 		/* Section header */
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
 		// IID 구조체 배열의 크기
 		int import_descriptor_size = inh64->OptionalHeader.DataDirectory[1].Size / sizeof(IMAGE_DATA_DIRECTORY);
 		// IID 구조체 값 출력
-		offset = set_file_offset(file, raw);
+		//offset = set_file_offset(file, raw);
 		print_image_import_descriptor(file, &buf, iid, import_descriptor_size);
 		printf("===================================================================\n\n");
 
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);
 			//int export_directory_size = inh64->OptionalHeader.DataDirectory[0].Size / sizeof(IMAGE_EXPORT_DIRECTORY);
 			int export_directory_size = inh64->OptionalHeader.DataDirectory[0].Size / sizeof(IMAGE_EXPORT_DIRECTORY);
-			offset = set_file_offset(file, raw);
+			//offset = set_file_offset(file, raw);
 			print_image_export_directory(file, &buf, ied);
 		}
 		printf("\n==============================================\n\n");

@@ -7,38 +7,38 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	IMAGE_EXPORT_DIRECTORY* pied = (IMAGE_EXPORT_DIRECTORY*)ied;
 
 	// EXPORT dll 출력
-	printf("[%08X] - Characteristics[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->Characteristics), pied->Characteristics, rva_to_raw_dword(fp, buf, pied->Characteristics) );
+	printf("[%08X] - Characteristics[%dbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->Characteristics), pied->Characteristics, rva_to_raw_dword(fp, buf, pied->Characteristics) );
 	offset = get_file_offset(fp, sizeof(pied->Characteristics));
 
-	printf("[%08X] - TimeDateStamp[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->TimeDateStamp), pied->TimeDateStamp, rva_to_raw_dword(fp, buf, pied->TimeDateStamp));
+	printf("[%08X] - TimeDateStamp[%dbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->TimeDateStamp), pied->TimeDateStamp, rva_to_raw_dword(fp, buf, pied->TimeDateStamp));
 	offset = get_file_offset(fp, sizeof(pied->TimeDateStamp));
 
-	printf("[%08X] - MajorVersion[%zdbyte]\t\t: %04X(RVA), %04X(RAW)\n", offset, sizeof(pied->MajorVersion), pied->MajorVersion, rva_to_raw_dword(fp, buf, pied->MajorVersion));
+	printf("[%08X] - MajorVersion[%dbyte]\t\t: %04X(RVA), %04X(RAW)\n", offset, sizeof(pied->MajorVersion), pied->MajorVersion, rva_to_raw_dword(fp, buf, pied->MajorVersion));
 	offset = get_file_offset(fp, sizeof(pied->MajorVersion));
 
-	printf("[%08X] - MinorVersion[%zdbyte]\t\t: %04X(RVA), %04X(RAW)\n", offset, sizeof(pied->MinorVersion), pied->MinorVersion, rva_to_raw_dword(fp, buf, pied->MinorVersion));
+	printf("[%08X] - MinorVersion[%dbyte]\t\t: %04X(RVA), %04X(RAW)\n", offset, sizeof(pied->MinorVersion), pied->MinorVersion, rva_to_raw_dword(fp, buf, pied->MinorVersion));
 	offset = get_file_offset(fp, sizeof(pied->MinorVersion));
 
 	raw = rva_to_raw_dword(fp, buf, ied->Name);
-	printf("[%08X] - Name[%zdbyte]\t\t\t: %08X(RVA), %08X(RAW), %s\n", offset, sizeof(pied->Name), ied->Name, raw, *buf + raw);
+	printf("[%08X] - Name[%dbyte]\t\t\t: %08X(RVA), %08X(RAW), %s\n", offset, sizeof(pied->Name), ied->Name, raw, *buf + raw);
 	offset = get_file_offset(fp, sizeof(pied->Name));
 
-	printf("[%08X] - Base[%zdbyte]\t\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->Base), pied->Base, rva_to_raw_dword(fp, buf, pied->Base));
+	printf("[%08X] - Base[%dbyte]\t\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->Base), pied->Base, rva_to_raw_dword(fp, buf, pied->Base));
 	offset = get_file_offset(fp, sizeof(pied->Base));
 
-	printf("[%08X] - NumberOfFunctions[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->NumberOfFunctions), pied->NumberOfFunctions, rva_to_raw_dword(fp, buf, pied->NumberOfFunctions));
+	printf("[%08X] - NumberOfFunctions[%dbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->NumberOfFunctions), pied->NumberOfFunctions, rva_to_raw_dword(fp, buf, pied->NumberOfFunctions));
 	offset = get_file_offset(fp, sizeof(pied->NumberOfFunctions));
 
-	printf("[%08X] - NumberOfNames[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->NumberOfNames), pied->NumberOfNames, rva_to_raw_dword(fp, buf, pied->NumberOfNames));
+	printf("[%08X] - NumberOfNames[%dbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->NumberOfNames), pied->NumberOfNames, rva_to_raw_dword(fp, buf, pied->NumberOfNames));
 	offset = get_file_offset(fp, sizeof(pied->NumberOfNames));
 
-	printf("[%08X] - AddressOfFunctions[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfFunctions), pied->AddressOfFunctions, rva_to_raw_dword(fp, buf, pied->AddressOfFunctions));
+	printf("[%08X] - AddressOfFunctions[%dbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfFunctions), pied->AddressOfFunctions, rva_to_raw_dword(fp, buf, pied->AddressOfFunctions));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfFunctions));
 
-	printf("[%08X] - AddressOfNames[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNames), pied->AddressOfNames, rva_to_raw_dword(fp, buf, pied->AddressOfNames));
+	printf("[%08X] - AddressOfNames[%dbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNames), pied->AddressOfNames, rva_to_raw_dword(fp, buf, pied->AddressOfNames));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfNames));
 
-	printf("[%08X] - AddressOfNameOrdinals[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNameOrdinals), pied->AddressOfNameOrdinals, rva_to_raw_dword(fp, buf, pied->AddressOfNameOrdinals));
+	printf("[%08X] - AddressOfNameOrdinals[%dbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNameOrdinals), pied->AddressOfNameOrdinals, rva_to_raw_dword(fp, buf, pied->AddressOfNameOrdinals));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfNameOrdinals));
 
 	printf("\n----------------------------------------\n\n");
@@ -134,6 +134,7 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 		}
 		
 		// 사용자가 입력한 값이 q이면 프로그램 종료, 그게 아니라면 계속 반복
+		
 		int ch = _getch();
 		if (ch == 'q')
 		{
@@ -141,6 +142,7 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 			return 0;
 		}
 		else continue;
+		
 	}
 
 
@@ -148,9 +150,9 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	/*
 	for (int i = 0; i < num_of_names; i++, pordinals++)
 	{
-		//printf("raw : %zd\n", pied->Base);
+		//printf("raw : %d\n", pied->Base);
 		index = *pordinals - pied->Base;
-		printf("index : %zd\n", index);
+		printf("index : %d\n", index);
 		eat_rva = *(pfunctions + index);
 		printf("test : %04X\n", eat_rva);
 	}

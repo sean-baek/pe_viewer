@@ -1,27 +1,31 @@
 #include "header.h"
 
 // 파일 사이즈를 구한 후 파일의 내용을 동적 메모리에 저장
-int get_file_content(FILE* fp, u_char** buf, int size)
+int get_file_content(FILE* fp, u_char** buf, int *size)
 {
 	// 파일 사이즈 구하기 실패 했을 때	
-	if ((size = get_file_size(fp)) == -1)
+	// get_file_size 함수에서 검사한다.
+	/*if ((size = get_file_size(fp)) <= 0)
 	{
 		printf("파일 사이즈를 구하는 데 실패했습니다.\n");
 		return -1;
 	}
-	
+	*/
+
+	// 파일 사이즈 구해오기
+	*size = get_file_size(fp);
 	// 파일 사이즈 구하기 성공 했을 때
-	else
-	{
+	//else
+	//{
 		// 파일 사이즈만큼 메모리 동적 할당
-		if ((*buf = (u_char*)malloc(size + 1)) == NULL)
+		if ((*buf = (u_char*)malloc(*size + 1)) == NULL)
 		{
 			printf("malloc() error\n");
 			return -1;
 		}
 
 		// 동적 할당한 heap 메모리 공간을 0으로 초기화
-		if (memset(*buf, 0x00, size) == NULL)
+		if (memset(*buf, 0x00, *size) == NULL)
 		{
 			printf("memset() error\n");
 			return -1;
@@ -35,7 +39,7 @@ int get_file_content(FILE* fp, u_char** buf, int size)
 		}
 
 		// 동적 할당한 메모리에 file 내용 전체 읽기
-		if (fread(*buf, 1, size, fp) == 0)
+		if (fread(*buf, 1, *size, fp) == 0)
 		{
 			printf("fread() error\n");
 			return -1;
@@ -45,5 +49,5 @@ int get_file_content(FILE* fp, u_char** buf, int size)
 		rewind(fp);
 
 		return 0;
-	}
+	//}
 }
