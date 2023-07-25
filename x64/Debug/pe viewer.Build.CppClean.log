@@ -1,0 +1,41 @@
+d:\source\repos\pe viewer\x64\debug\vc143.pdb
+d:\source\repos\pe viewer\x64\debug\vc143.idb
+d:\source\repos\pe viewer\x64\debug\set_file_offset.obj
+d:\source\repos\pe viewer\x64\debug\rva_to_raw.obj
+d:\source\repos\pe viewer\x64\debug\print_section_header.obj
+d:\source\repos\pe viewer\x64\debug\print_nt_header.obj
+d:\source\repos\pe viewer\x64\debug\print_inh_ioh_datadirectory.obj
+d:\source\repos\pe viewer\x64\debug\print_iid.obj
+d:\source\repos\pe viewer\x64\debug\print_ied.obj
+d:\source\repos\pe viewer\x64\debug\print_dos_header.obj
+d:\source\repos\pe viewer\x64\debug\main.obj
+d:\source\repos\pe viewer\x64\debug\get_file_size.obj
+d:\source\repos\pe viewer\x64\debug\get_file_offset.obj
+d:\source\repos\pe viewer\x64\debug\get_file_content.obj
+d:\source\repos\pe viewer\x64\debug\pe viewer.ilk
+d:\source\repos\pe viewer\x64\debug\pe viewer.exe
+d:\source\repos\pe viewer\x64\debug\pe viewer.pdb
+d:\github\pe_viewer\x64\debug\get_file_content.obj
+d:\github\pe_viewer\x64\debug\get_file_offset.obj
+d:\github\pe_viewer\x64\debug\get_file_size.obj
+d:\github\pe_viewer\x64\debug\main.obj
+d:\github\pe_viewer\x64\debug\print_dos_header.obj
+d:\github\pe_viewer\x64\debug\print_ied.obj
+d:\github\pe_viewer\x64\debug\print_iid.obj
+d:\github\pe_viewer\x64\debug\print_inh_ioh_datadirectory.obj
+d:\github\pe_viewer\x64\debug\print_nt_header.obj
+d:\github\pe_viewer\x64\debug\print_section_header.obj
+d:\github\pe_viewer\x64\debug\rva_to_raw.obj
+d:\github\pe_viewer\x64\debug\set_file_offset.obj
+d:\github\pe_viewer\x64\debug\pe viewer.ilk
+d:\github\pe_viewer\x64\debug\vc143.idb
+d:\github\pe_viewer\x64\debug\pe viewer.pdb
+d:\github\pe_viewer\x64\debug\vc143.pdb
+d:\github\pe_viewer\x64\debug\pe viewer.exe
+d:\github\pe_viewer\x64\debug\pe viewer.tlog\cl.command.1.tlog
+d:\github\pe_viewer\x64\debug\pe viewer.tlog\cl.items.tlog
+d:\github\pe_viewer\x64\debug\pe viewer.tlog\cl.read.1.tlog
+d:\github\pe_viewer\x64\debug\pe viewer.tlog\cl.write.1.tlog
+d:\github\pe_viewer\x64\debug\pe viewer.tlog\link.command.1.tlog
+d:\github\pe_viewer\x64\debug\pe viewer.tlog\link.read.1.tlog
+d:\github\pe_viewer\x64\debug\pe viewer.tlog\link.write.1.tlog

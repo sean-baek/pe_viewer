@@ -16,20 +16,20 @@ void print_image_import_descriptor(FILE* fp, u_char** buf, IMAGE_IMPORT_DESCRIPT
 		if (piid->Characteristics == 0x00000000 && piid->OriginalFirstThunk == 0x00000000 && piid->TimeDateStamp == 0x00000000 && piid->ForwarderChain == 0x00000000 && piid->Name == 0x00000000 && piid->FirstThunk == 0x00000000)
 			break;
 
-		printf("[%08X] - OriginalFirstThunk[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->OriginalFirstThunk), piid->OriginalFirstThunk, rva_to_raw_dword(fp, buf, piid->OriginalFirstThunk));
+		printf("[%08X] - OriginalFirstThunk[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->OriginalFirstThunk), piid->OriginalFirstThunk, (unsigned int)convert_rva_to_raw(*buf, &(piid->OriginalFirstThunk), 4));
 		offset = get_file_offset(fp, sizeof(piid->OriginalFirstThunk));
 
-		printf("[%08X] - TimeDateStamp[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->TimeDateStamp), piid->TimeDateStamp, rva_to_raw_dword(fp, buf, piid->TimeDateStamp));
+		printf("[%08X] - TimeDateStamp[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->TimeDateStamp), piid->TimeDateStamp, (unsigned int)convert_rva_to_raw(*buf, &(piid->TimeDateStamp), 4));
 		offset = get_file_offset(fp, sizeof(piid->TimeDateStamp));
 
-		printf("[%08X] - ForwarderChain[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->ForwarderChain), piid->ForwarderChain, rva_to_raw_dword(fp, buf, piid->ForwarderChain));
+		printf("[%08X] - ForwarderChain[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(piid->ForwarderChain), piid->ForwarderChain, (unsigned int)convert_rva_to_raw(*buf, &(piid->ForwarderChain), 4));
 		offset = get_file_offset(fp, sizeof(piid->ForwarderChain));
 
-		raw = rva_to_raw_dword(fp, buf, piid->Name);
+		raw = (int)convert_rva_to_raw(*buf, &(piid->Name), 4);
 		printf("[%08X] - Name[%zdbyte]\t\t: %08X(RVA), %08X(RAW), %s\n", offset, sizeof(piid->Name), piid->Name, raw, *buf + raw);
 		offset = get_file_offset(fp, sizeof(piid->Name));
 
-		printf("[%08X] - FirstThunk[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n\n", offset, sizeof(piid->FirstThunk), piid->FirstThunk, rva_to_raw_dword(fp, buf, piid->FirstThunk));
+		printf("[%08X] - FirstThunk[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n\n", offset, sizeof(piid->FirstThunk), piid->FirstThunk, (unsigned int)convert_rva_to_raw(*buf, &(piid->FirstThunk), 4));
 		offset = get_file_offset(fp, sizeof(piid->FirstThunk));
 
 		printf("-----------------------------------------------\n\n");
@@ -48,21 +48,23 @@ void print_image_import_descriptor(FILE* fp, u_char** buf, IMAGE_IMPORT_DESCRIPT
 				break;
 
 			// IMPORT 함수가 어떤 dll 라이브러리에 속해있는지 확인하기 위해 라이브러리 이름 출력
-			raw = rva_to_raw_dword(fp, buf, piid->Name);
+			raw = (int)convert_rva_to_raw(*buf, &(piid->Name), 4);
 			printf("[%08X] - [***** %s *****]\n\n", raw, *buf + raw);
 
 			// IMAGE IMPORT Descriptor 구조체의 OriginalFirstThunk 구조체에 있는 값(RVA)은 IMAGE_THUNK_DATA의 멤버 변수의 값이다.
-			raw = rva_to_raw_dword(fp, buf, piid->OriginalFirstThunk);
+			raw = (int)convert_rva_to_raw(*buf, &(piid->OriginalFirstThunk), 4);
 			IMAGE_THUNK_DATA32* itd_oft32 = (IMAGE_THUNK_DATA32*)(*buf + raw);
 
-			raw = rva_to_raw_dword(fp, buf, piid->FirstThunk);
+			raw = (int)convert_rva_to_raw(*buf, &(piid->FirstThunk), 4);
 			IMAGE_THUNK_DATA32* itd_ft32 = (IMAGE_THUNK_DATA32*)(*buf + raw);
 
 			// IMAGE THUNK DATA 구조체의 마지막은 0x00000000 값이다.
 			// 해당 값이 아닐 동안 반복하여 dll 라이브러리 속 함수들 출력
 			for (; itd_oft32->u1.AddressOfData != 0x00000000; itd_oft32++, itd_ft32++)
 			{
-				raw = rva_to_raw_dword(fp, buf, itd_oft32->u1.AddressOfData);
+				//int* converted_raw_val = (int*)convert_rva_to_raw(fp, buf, &(itd_oft32->u1.AddressOfData), 4);
+				//raw = *converted_raw_val;
+				raw = (int)convert_rva_to_raw(*buf, &(itd_oft32->u1.AddressOfData), 4);
 				IMAGE_IMPORT_BY_NAME* iibn32 = (IMAGE_IMPORT_BY_NAME*)(*buf + raw);
 
 				fseek(fp, raw, SEEK_SET);
@@ -72,9 +74,9 @@ void print_image_import_descriptor(FILE* fp, u_char** buf, IMAGE_IMPORT_DESCRIPT
 				printf("[%08X] - Name : %s()\n", offset, iibn32->Name);
 
 				// IAT 영역 출력
-				fseek(fp, rva_to_raw_dword(fp, buf, piid->FirstThunk), SEEK_SET);
+				fseek(fp, (long)convert_rva_to_raw(*buf, &(piid->FirstThunk), 4), SEEK_SET);
 				offset = ftell(fp);
-				printf("[%08X] - IAT : %X(RVA), %X(RAW)\n\n", offset, itd_ft32->u1.Function, rva_to_raw_dword(fp, buf, itd_ft32->u1.Function));
+				printf("[%08X] - IAT : %X(RVA), %X(RAW)\n\n", offset, itd_ft32->u1.Function, (unsigned int)convert_rva_to_raw(*buf, &(itd_ft32->u1.Function), 4));
 			}
 			printf("----------------------------------------\n\n");
 		}
@@ -89,21 +91,21 @@ void print_image_import_descriptor(FILE* fp, u_char** buf, IMAGE_IMPORT_DESCRIPT
 				break;
 
 			// IMPORT 함수가 어떤 dll 라이브러리에 속해있는지 확인하기 위해 라이브러리 이름 출력
-			raw = rva_to_raw_dword(fp, buf, piid->Name);
+			raw = (int)convert_rva_to_raw(*buf, &(piid->Name), 4);
 			printf("[%08X] - [***** %s *****]\n\n", raw, *buf + raw);
 
 			// IMAGE IMPORT Descriptor 구조체의 OriginalFirstThunk 구조체에 있는 값(RVA)은 IMAGE_THUNK_DATA의 멤버 변수의 값이다.
-			raw = rva_to_raw_dword(fp, buf, piid->OriginalFirstThunk);
+			raw = (int)convert_rva_to_raw(*buf, &(piid->OriginalFirstThunk), 4);
 			IMAGE_THUNK_DATA64* itd_oft64 = (IMAGE_THUNK_DATA64*)(*buf + raw);
 
-			raw = rva_to_raw_dword(fp, buf, piid->FirstThunk);
+			raw = (int)convert_rva_to_raw(*buf, &(piid->FirstThunk), 4);
 			IMAGE_THUNK_DATA64* itd_ft64 = (IMAGE_THUNK_DATA64*)(*buf + raw);
 
 			// IMAGE THUNK DATA 구조체의 마지막은 0x00000000 값이다.
 			// 해당 값이 아닐 동안 반복하여 dll 라이브러리 속 함수들 출력
 			for (; itd_oft64->u1.AddressOfData != 0x00000000; itd_oft64++, itd_ft64++)
 			{
-				ull_raw = rva_to_raw_ulonglong(fp, buf, itd_oft64->u1.AddressOfData);
+				ull_raw = (ULONGLONG)convert_rva_to_raw(*buf, &(itd_oft64->u1.AddressOfData), 8);
 				IMAGE_IMPORT_BY_NAME* iibn64 = (IMAGE_IMPORT_BY_NAME*)(*buf + ull_raw);
 
 				fseek(fp, (long)ull_raw, SEEK_SET);
@@ -113,9 +115,9 @@ void print_image_import_descriptor(FILE* fp, u_char** buf, IMAGE_IMPORT_DESCRIPT
 				printf("[%08X] - Name : %s()\n", offset, iibn64->Name);
 
 				// IAT 영역 출력
-				fseek(fp, rva_to_raw_dword(fp, buf, piid->FirstThunk), SEEK_SET);
+				fseek(fp, (long)convert_rva_to_raw(*buf, &(piid->FirstThunk), 4), SEEK_SET);
 				offset = ftell(fp);
-				printf("[%08X] - IAT : %llX(RVA), %llX(RAW)\n\n", offset, itd_ft64->u1.Function, rva_to_raw_ulonglong(fp, buf, itd_ft64->u1.Function));
+				printf("[%08X] - IAT : %llX(RVA), %llX(RAW)\n\n", offset, itd_ft64->u1.Function, (long long)convert_rva_to_raw(*buf, &(itd_ft64->u1.Function), 8));
 			}
 			printf("----------------------------------------\n\n");
 		}

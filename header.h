@@ -21,6 +21,7 @@ int set_file_offset(FILE* fp, int offset);
 int get_file_offset(FILE* fp, int offset);
 
 //int rva_to_raw(FILE* fp, u_char** binary_buf, DWORD rva_value);
+ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t size);
 int rva_to_raw_dword(FILE* fp, u_char** binary_buf, DWORD rva_value);
 ULONGLONG rva_to_raw_ulonglong(FILE* fp, u_char** binary_buf, ULONGLONG rva_value);
 

@@ -10,7 +10,7 @@ void print_section_header(FILE* fp, IMAGE_SECTION_HEADER* ish, WORD section_num)
 		printf("[%08X] - Section Name\t\t: %s\n", offset, ish->Name);
 		offset = get_file_offset(fp, sizeof(ish->Name));
 
-		//printf("- PhysicalAddress[%zdbyte]\t:%08X\n", sizeof(ish->Misc.PhysicalAddress), ish->Misc.PhysicalAddress);
+		//printf("- PhysicalAddress[%dbyte]\t:%08X\n", sizeof(ish->Misc.PhysicalAddress), ish->Misc.PhysicalAddress);
 		printf("[%08X] - VirtualSize[%zdbyte]\t\t: %08X\n", offset, sizeof(ish->Misc.VirtualSize), ish->Misc.VirtualSize);
 		offset = get_file_offset(fp, sizeof(ish->Misc.VirtualSize));
 

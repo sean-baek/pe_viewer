@@ -1,0 +1,2 @@
+D:\source\repos\pe viewer\x64\Debug\pe viewer.exe
+D:\github\pe_viewer\x64\Debug\pe viewer.exe

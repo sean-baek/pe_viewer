@@ -66,6 +66,7 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	DWORD* pfunctions = (DWORD*)(*buf + raw);
 
 	printf("number of names : %d\n\n", num_of_names);
+	printf("number of functions = %d\n\n", num_of_functions);
 
 	// Export 함수 이름 배열(RAW)의 주소를 백업하여 사용
 	char* p_offset_export_func_names = offset_export_func_names;
@@ -135,6 +136,7 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 		
 		// 사용자가 입력한 값이 q이면 프로그램 종료, 그게 아니라면 계속 반복
 		
+		
 		int ch = _getch();
 		if (ch == 'q')
 		{
@@ -150,9 +152,9 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	/*
 	for (int i = 0; i < num_of_names; i++, pordinals++)
 	{
-		//printf("raw : %zd\n", pied->Base);
+		//printf("raw : %d\n", pied->Base);
 		index = *pordinals - pied->Base;
-		printf("index : %zd\n", index);
+		printf("index : %d\n", index);
 		eat_rva = *(pfunctions + index);
 		printf("test : %04X\n", eat_rva);
 	}

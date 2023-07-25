@@ -81,9 +81,10 @@ int main(int argc, char** argv)
 		/* IMAGE_IMPORT_DESCRIPTOR */
 		printf("========== [IMAGE_IMPORT_DESCRIPTOR] ==========\n\n");
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 시작 주소 RVA 값을 RAW로 변환
-		raw = rva_to_raw_dword(file, &buf, inh32->OptionalHeader.DataDirectory[1].VirtualAddress);
+		raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[1].VirtualAddress), 4);
 		// IMPORT Directory 파일에서의 주소
-		printf("IMPORT DESCRIPTOR RAW : %X\n\n", raw);
+		printf("IMPORT DESCRIPTOR RVA : 0x%X\n", inh32->OptionalHeader.DataDirectory[1].VirtualAddress);
+		printf("IMPORT DESCRIPTOR RAW : 0x%X\n\n", raw);
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 실제 주소를 지정
 		IMAGE_IMPORT_DESCRIPTOR* iid = (IMAGE_IMPORT_DESCRIPTOR*)(buf + raw);
 		// IID 구조체 배열의 크기
@@ -101,7 +102,7 @@ int main(int argc, char** argv)
 			printf("EXPORT DIRECTORY가 존재하지 않습니다.\n");
 		else
 		{
-			raw = rva_to_raw_dword(file, &buf, inh32->OptionalHeader.DataDirectory[0].VirtualAddress);
+			raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[0].VirtualAddress), 4);
 			printf("EXPORT Directory RAW : %08X\n\n", raw);
 
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);
@@ -145,7 +146,7 @@ int main(int argc, char** argv)
 		/* IMAGE_IMPORT_DESCRIPTOR */
 		printf("==================== [IMAGE_IMPORT_DESCRIPTOR] ====================\n\n");
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 시작 주소 RVA 값을 RAW로 변환
-		raw = rva_to_raw_dword(file, &buf, inh64->OptionalHeader.DataDirectory[1].VirtualAddress);
+		raw = (int)convert_rva_to_raw(buf, &(inh64->OptionalHeader.DataDirectory[1].VirtualAddress), 4);
 		printf("IMPORT Directory RAW : %X\n\n", raw);
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 실제 주소를 지정
 		IMAGE_IMPORT_DESCRIPTOR* iid = (IMAGE_IMPORT_DESCRIPTOR*)(buf + raw);
@@ -164,7 +165,7 @@ int main(int argc, char** argv)
 			printf("EXPORT DIRECTORY가 존재하지 않습니다.\n");
 		else
 		{
-			raw = rva_to_raw_dword(file, &buf, inh64->OptionalHeader.DataDirectory[0].VirtualAddress);
+			raw = (int)convert_rva_to_raw(buf, &(inh64->OptionalHeader.DataDirectory[0].VirtualAddress), 4);
 			printf("EXPORT Directory RAW : %X\n", raw);
 
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);

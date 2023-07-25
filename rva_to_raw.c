@@ -1,66 +1,54 @@
 #include "header.h"
 
-/*
-// 3번째 인자의 자료형이 DWORD이므로 IMAGE_THUNK_DATA64에서는 이 함수를 사용 못한다.
-int rva_to_raw(FILE* fp, u_char** binary_buf, DWORD rva_value)
+/*size : 넘겨지는 값에 따라 rva 값을 유동적으로 처리하기 위함*/
+ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t size)
 {
-	//printf("rva value : %X\n", rva_value);
-	int raw;
-	IMAGE_DOS_HEADER* rtr_idh = (IMAGE_DOS_HEADER*)*binary_buf;
-	IMAGE_NT_HEADERS* rtr_inh = (IMAGE_NT_HEADERS*)(*binary_buf + rtr_idh->e_lfanew);
+	IMAGE_DOS_HEADER* idh = (IMAGE_DOS_HEADER*)binary_buf;
 
-	// CPU의 값이 x86일 때
-	if (rtr_inh->FileHeader.Machine == 0x014c)
+	switch (size)
 	{
-		IMAGE_NT_HEADERS32* rtr_inh32 = (IMAGE_NT_HEADERS32*)(*binary_buf + rtr_idh->e_lfanew);
-		IMAGE_SECTION_HEADER* rtr_ish32 = (IMAGE_SECTION_HEADER*)(*binary_buf + rtr_idh->e_lfanew + sizeof(rtr_inh32->Signature) + sizeof(rtr_inh32->FileHeader) + rtr_inh32->FileHeader.SizeOfOptionalHeader);
-
-
-		for (int i = 0; i < rtr_inh32->FileHeader.NumberOfSections; i++, rtr_ish32++)
+	case 4: 
 		{
-			// rva 값이 현재 section의 max치 메모리 값 이상이거나 min치 메모리 값보다 작으면 진행하지 않고 for문으로 되돌아간다.
-			if (rva_value >= (rtr_ish32->VirtualAddress + rtr_ish32->Misc.VirtualSize) || rva_value < rtr_ish32->VirtualAddress)
-			{
+			DWORD raw;
+			IMAGE_NT_HEADERS32* rtr_inh32 = (IMAGE_NT_HEADERS32*)(binary_buf + idh->e_lfanew);
+			IMAGE_SECTION_HEADER* rtr_ish = (IMAGE_SECTION_HEADER*)(binary_buf + idh->e_lfanew + sizeof(rtr_inh32->Signature) + sizeof(rtr_inh32->FileHeader) + rtr_inh32->FileHeader.SizeOfOptionalHeader);
 
-				continue;
-			}
-			else
+			//DWORD* test = (DWORD*)rva_value;
+			//printf("rva value : %d\n\n", *test);
+			for (int i = 0; i < rtr_inh32->FileHeader.NumberOfSections; i++, rtr_ish++)
 			{
-				raw = rva_value - rtr_ish32->VirtualAddress + rtr_ish32->PointerToRawData;
-				return raw;
-			}
+				// rva 값이 현재 section의 max치 메모리 값 이상이거나 min치 메모리 값보다 작으면 진행하지 않고 for문으로 되돌아간다.
+				if (*(DWORD*)rva_value >= rtr_ish->VirtualAddress && *(unsigned long*)rva_value < (rtr_ish->VirtualAddress + rtr_ish->Misc.VirtualSize))
+				{
 
+					raw = *(DWORD*)rva_value - rtr_ish->VirtualAddress + rtr_ish->PointerToRawData;
+					return raw;
+				}
+			}
+			break;
+		}
+	case 8:
+		{
+			ULONGLONG raw;
+			IMAGE_NT_HEADERS64* rtr_inh64 = (IMAGE_NT_HEADERS64*)(binary_buf + idh->e_lfanew);
+			IMAGE_SECTION_HEADER* rtr_ish = (IMAGE_SECTION_HEADER*)(binary_buf + idh->e_lfanew + sizeof(rtr_inh64->Signature) + sizeof(rtr_inh64->FileHeader) + rtr_inh64->FileHeader.SizeOfOptionalHeader);
+
+			for (int i = 0; i < rtr_inh64->FileHeader.NumberOfSections; i++, rtr_ish++)
+			{
+				// rva 값이 현재 section의 max치 메모리 값 이상이거나 min치 메모리 값보다 작으면 진행하지 않고 for문으로 되돌아간다.
+				if (*(DWORD*)rva_value >= rtr_ish->VirtualAddress && *(unsigned long*)rva_value < (rtr_ish->VirtualAddress + rtr_ish->Misc.VirtualSize))
+				{
+
+					raw = *(ULONGLONG*)rva_value - rtr_ish->VirtualAddress + rtr_ish->PointerToRawData;
+					return raw;
+				}
+			}
+			break;
 		}
 	}
-	else if (rtr_inh->FileHeader.Machine == 0x0200 || rtr_inh->FileHeader.Machine == 0x8664)
-	{
-		IMAGE_NT_HEADERS64* rtr_inh64 = (IMAGE_NT_HEADERS64*)(binary_buf + rtr_idh->e_lfanew);
-		IMAGE_SECTION_HEADER* rtr_ish64 = (IMAGE_SECTION_HEADER*)(*binary_buf + rtr_idh->e_lfanew + sizeof(rtr_inh64->Signature) + sizeof(rtr_inh64->FileHeader) + rtr_inh64->FileHeader.SizeOfOptionalHeader);
 
-		for (int i = 0; i < rtr_inh64->FileHeader.NumberOfSections; i++, rtr_ish64++)
-		{
-			// rva 값이 현재 section의 max치 메모리 값 이상이거나 min치 메모리 값보다 작으면 진행하지 않고 for문으로 되돌아간다.
-			if ((rva_value >= (rtr_ish64->VirtualAddress + rtr_ish64->Misc.VirtualSize)) && (rva_value < rtr_ish64->VirtualAddress))
-			{
-				continue;
-			}
-			else
-			{
-				raw = rva_value - rtr_ish64->VirtualAddress + rtr_ish64->PointerToRawData;
-				return raw;
-			}
-
-		}
-	}
-	else
-	{
-		printf("Unknown CPU Value\n");
-		return 0;
-	}
-
-	return 0;
+	return (ULONGLONG) - 1;
 }
-*/
 
 // x86을 위한 용도
 int rva_to_raw_dword(FILE* fp, u_char** binary_buf, DWORD rva_value)

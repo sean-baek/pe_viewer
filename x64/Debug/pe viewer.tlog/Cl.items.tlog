@@ -1,0 +1,12 @@
+D:\github\pe_viewer\get_file_content.c;D:\github\pe_viewer\x64\Debug\get_file_content.obj
+D:\github\pe_viewer\get_file_offset.c;D:\github\pe_viewer\x64\Debug\get_file_offset.obj
+D:\github\pe_viewer\get_file_size.c;D:\github\pe_viewer\x64\Debug\get_file_size.obj
+D:\github\pe_viewer\main.c;D:\github\pe_viewer\x64\Debug\main.obj
+D:\github\pe_viewer\print_dos_header.c;D:\github\pe_viewer\x64\Debug\print_dos_header.obj
+D:\github\pe_viewer\print_ied.c;D:\github\pe_viewer\x64\Debug\print_ied.obj
+D:\github\pe_viewer\print_iid.c;D:\github\pe_viewer\x64\Debug\print_iid.obj
+D:\github\pe_viewer\print_inh_ioh_datadirectory.c;D:\github\pe_viewer\x64\Debug\print_inh_ioh_datadirectory.obj
+D:\github\pe_viewer\print_nt_header.c;D:\github\pe_viewer\x64\Debug\print_nt_header.obj
+D:\github\pe_viewer\print_section_header.c;D:\github\pe_viewer\x64\Debug\print_section_header.obj
+D:\github\pe_viewer\rva_to_raw.c;D:\github\pe_viewer\x64\Debug\rva_to_raw.obj
+D:\github\pe_viewer\set_file_offset.c;D:\github\pe_viewer\x64\Debug\set_file_offset.obj
