@@ -49,7 +49,7 @@ ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t s
 }
 
 // x86을 위한 용도
-int rva_to_raw_dword(FILE* fp, u_char** binary_buf, DWORD rva_value)
+DWORD rva_to_raw_dword(FILE* fp, u_char** binary_buf, DWORD rva_value)
 {
 	int raw;
 	IMAGE_DOS_HEADER* rtr_idh = (IMAGE_DOS_HEADER*)*binary_buf;

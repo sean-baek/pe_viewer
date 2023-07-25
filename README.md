@@ -1,7 +1,8 @@
 # ISSUE
-    - rva_to_raw 함수의 3번째 인자가 기본적으로 DWORD이지만 IAT 부분에서 ULONGLONG으로 받아야 할 때가 있어서
-    rva_to_raw_dword와 rva_to_raw_ulonglong 함수로 나눠서 사용하지만 3번째 인자를 void형 pointer로 받아 사용할 수 있지 않을까 한다.
-
+-> rva_to_raw 함수의 3번째 인자가 기본적으로 DWORD이지만 IAT 부분에서 ULONGLONG으로 받아야 할 때가 있어서
+    => Q : rva_to_raw_dword와 rva_to_raw_ulonglong 함수로 나눠서 사용하지만 3번째 인자를 void형 pointer로 받아 사용할 수 있지 않을까 한다.
+    => A : convert_rva_to_raw 함수를 만들었고, 이 함수는 4byte인지 8byte인지 인자값에 따라 다르게 처리한다.
+        호출할 때 반환 자료형 부분에 대해 명시적 형변환을 해줘야 한다.
 ---
 
 # 구조체 순서
@@ -68,7 +69,7 @@ RAW : RVA - VirtualAddress + PointerToRawData
 
 ---
 
-# EAT 부분 알고리즘
+# EAT 부분 알고리즘(설명 수정 필요)
 
     1. EXPORT 함수 이름들이 적힌 RAW 주소 부분을 구한다.
     (EXPORT하는 라이브러리 이름 뒤에부터가 시작 부분이다.)

@@ -51,7 +51,6 @@ int main(int argc, char** argv)
 
 
 	// 32bit 프로그램일 때
-	//if (inh->FileHeader.Machine == IMAGE_FILE_MACHINE_I386 || inh->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC)
 	if (inh->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC)
 	{
 		IMAGE_NT_HEADERS32* inh32 = (IMAGE_NT_HEADERS32*)(buf + idh->e_lfanew);
@@ -63,35 +62,33 @@ int main(int argc, char** argv)
 		
 		/* dos header */
 		print_dos_header(file, idh);
-
-		// 파일 포인터를 NT header 위치로 이동
-		//offset = set_file_offset(file, idh->e_lfanew);
+		
 		/* 32bit용 NT Header */
-
 		print_nt_header32(file, idh, inh32);
 
-
-		// 파일 포인터를 Section header 위치로 이동
-		//offset = set_file_offset(file, (idh->e_lfanew + sizeof(inh32->Signature) + sizeof(inh32->FileHeader) + inh32->FileHeader.SizeOfOptionalHeader));		
 		// print_section_header()에서 for문에 사용될 section 개수 구하기
 		WORD section_num = inh32->FileHeader.NumberOfSections;
+
 		/* Section header */
 		print_section_header(file, ish, section_num);
 
 		/* IMAGE_IMPORT_DESCRIPTOR */
 		printf("========== [IMAGE_IMPORT_DESCRIPTOR] ==========\n\n");
+
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 시작 주소 RVA 값을 RAW로 변환
 		raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[1].VirtualAddress), 4);
+
 		// IMPORT Directory 파일에서의 주소
-		printf("IMPORT DESCRIPTOR RVA : 0x%X\n", inh32->OptionalHeader.DataDirectory[1].VirtualAddress);
-		printf("IMPORT DESCRIPTOR RAW : 0x%X\n\n", raw);
+		printf("IMPORT DESCRIPTOR\t: 0x%X(RVA), 0x%X(RAW)\n\n", inh32->OptionalHeader.DataDirectory[1].VirtualAddress, raw);
+
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 실제 주소를 지정
 		IMAGE_IMPORT_DESCRIPTOR* iid = (IMAGE_IMPORT_DESCRIPTOR*)(buf + raw);
+
 		// IID 구조체 배열의 크기
 		int import_descriptor_size = inh32->OptionalHeader.DataDirectory[1].Size / sizeof(IMAGE_IMPORT_DESCRIPTOR);
+
 		// IID 구조체 값 출력
-		//offset = set_file_offset(file, raw);
-		print_image_import_descriptor(file, &buf, iid, import_descriptor_size);
+		print_image_import_descriptor(file, buf, iid, import_descriptor_size);
 		printf("===============================================\n\n");
 
 
@@ -154,7 +151,7 @@ int main(int argc, char** argv)
 		int import_descriptor_size = inh64->OptionalHeader.DataDirectory[1].Size / sizeof(IMAGE_DATA_DIRECTORY);
 		// IID 구조체 값 출력
 		//offset = set_file_offset(file, raw);
-		print_image_import_descriptor(file, &buf, iid, import_descriptor_size);
+		print_image_import_descriptor(file, buf, iid, import_descriptor_size);
 		printf("===================================================================\n\n");
 
 
