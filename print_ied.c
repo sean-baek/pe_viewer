@@ -7,38 +7,38 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	IMAGE_EXPORT_DIRECTORY* pied = (IMAGE_EXPORT_DIRECTORY*)ied;
 
 	// EXPORT dll Ãâ·Â
-	printf("[%08X] - Characteristics[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->Characteristics), pied->Characteristics, rva_to_raw_dword(fp, buf, pied->Characteristics) );
+	printf("[%08X] - Characteristics[%zdbyte]\t\t: %08X\n", offset, sizeof(pied->Characteristics), pied->Characteristics);
 	offset = get_file_offset(fp, sizeof(pied->Characteristics));
 
-	printf("[%08X] - TimeDateStamp[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->TimeDateStamp), pied->TimeDateStamp, rva_to_raw_dword(fp, buf, pied->TimeDateStamp));
+	printf("[%08X] - TimeDateStamp[%zdbyte]\t\t: %08X\n", offset, sizeof(pied->TimeDateStamp), pied->TimeDateStamp);
 	offset = get_file_offset(fp, sizeof(pied->TimeDateStamp));
 
-	printf("[%08X] - MajorVersion[%zdbyte]\t\t: %04X(RVA), %04X(RAW)\n", offset, sizeof(pied->MajorVersion), pied->MajorVersion, rva_to_raw_dword(fp, buf, pied->MajorVersion));
+	printf("[%08X] - MajorVersion[%zdbyte]\t\t: %04X\n", offset, sizeof(pied->MajorVersion), pied->MajorVersion);
 	offset = get_file_offset(fp, sizeof(pied->MajorVersion));
 
-	printf("[%08X] - MinorVersion[%zdbyte]\t\t: %04X(RVA), %04X(RAW)\n", offset, sizeof(pied->MinorVersion), pied->MinorVersion, rva_to_raw_dword(fp, buf, pied->MinorVersion));
+	printf("[%08X] - MinorVersion[%zdbyte]\t\t: %04X\n", offset, sizeof(pied->MinorVersion), pied->MinorVersion);
 	offset = get_file_offset(fp, sizeof(pied->MinorVersion));
 
-	raw = rva_to_raw_dword(fp, buf, ied->Name);
+	raw = (int)convert_rva_to_raw(*buf, &(ied->Name), 4);
 	printf("[%08X] - Name[%zdbyte]\t\t\t: %08X(RVA), %08X(RAW), %s\n", offset, sizeof(pied->Name), ied->Name, raw, *buf + raw);
 	offset = get_file_offset(fp, sizeof(pied->Name));
 
-	printf("[%08X] - Base[%zdbyte]\t\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->Base), pied->Base, rva_to_raw_dword(fp, buf, pied->Base));
+	printf("[%08X] - Base[%zdbyte]\t\t\t: %08X\n", offset, sizeof(pied->Base), pied->Base);
 	offset = get_file_offset(fp, sizeof(pied->Base));
 
-	printf("[%08X] - NumberOfFunctions[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->NumberOfFunctions), pied->NumberOfFunctions, rva_to_raw_dword(fp, buf, pied->NumberOfFunctions));
+	printf("[%08X] - NumberOfFunctions[%zdbyte]\t\t: %08X\n", offset, sizeof(pied->NumberOfFunctions), pied->NumberOfFunctions);
 	offset = get_file_offset(fp, sizeof(pied->NumberOfFunctions));
 
-	printf("[%08X] - NumberOfNames[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->NumberOfNames), pied->NumberOfNames, rva_to_raw_dword(fp, buf, pied->NumberOfNames));
+	printf("[%08X] - NumberOfNames[%zdbyte]\t\t: %08X\n", offset, sizeof(pied->NumberOfNames), pied->NumberOfNames);
 	offset = get_file_offset(fp, sizeof(pied->NumberOfNames));
 
-	printf("[%08X] - AddressOfFunctions[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfFunctions), pied->AddressOfFunctions, rva_to_raw_dword(fp, buf, pied->AddressOfFunctions));
+	printf("[%08X] - AddressOfFunctions[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfFunctions), pied->AddressOfFunctions, (int)convert_rva_to_raw(*buf, &(pied->AddressOfFunctions), 4));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfFunctions));
 
-	printf("[%08X] - AddressOfNames[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNames), pied->AddressOfNames, rva_to_raw_dword(fp, buf, pied->AddressOfNames));
+	printf("[%08X] - AddressOfNames[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNames), pied->AddressOfNames, (int)convert_rva_to_raw(*buf, &(pied->AddressOfNames), 4));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfNames));
 
-	printf("[%08X] - AddressOfNameOrdinals[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNameOrdinals), pied->AddressOfNameOrdinals, rva_to_raw_dword(fp, buf, pied->AddressOfNameOrdinals));
+	printf("[%08X] - AddressOfNameOrdinals[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNameOrdinals), pied->AddressOfNameOrdinals, (int)convert_rva_to_raw(*buf, &(pied->AddressOfNameOrdinals), 4));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfNameOrdinals));
 
 	printf("\n----------------------------------------\n\n");

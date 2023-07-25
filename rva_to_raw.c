@@ -13,8 +13,6 @@ ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t s
 			IMAGE_NT_HEADERS32* rtr_inh32 = (IMAGE_NT_HEADERS32*)(binary_buf + idh->e_lfanew);
 			IMAGE_SECTION_HEADER* rtr_ish = (IMAGE_SECTION_HEADER*)(binary_buf + idh->e_lfanew + sizeof(rtr_inh32->Signature) + sizeof(rtr_inh32->FileHeader) + rtr_inh32->FileHeader.SizeOfOptionalHeader);
 
-			//DWORD* test = (DWORD*)rva_value;
-			//printf("rva value : %d\n\n", *test);
 			for (int i = 0; i < rtr_inh32->FileHeader.NumberOfSections; i++, rtr_ish++)
 			{
 				// rva 값이 현재 section의 max치 메모리 값 이상이거나 min치 메모리 값보다 작으면 진행하지 않고 for문으로 되돌아간다.
