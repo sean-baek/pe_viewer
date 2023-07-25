@@ -15,7 +15,7 @@ extern int offset;
 // 파일 사이즈를 구한다.
 int get_file_size(FILE* fp);
 // 파일 사이즈를 구한 후 파일의 내용을 동적 메모리에 저장
-int get_file_content(FILE* fp, u_char** buf, int *size);
+void* get_file_content(FILE* fp, int *size);
 // 파일 
 int set_file_offset(FILE* fp, int offset);
 int get_file_offset(FILE* fp, int offset);
