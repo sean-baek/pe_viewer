@@ -19,7 +19,7 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	printf("[%08X] - MinorVersion[%zdbyte]\t\t: %04X\n", offset, sizeof(pied->MinorVersion), pied->MinorVersion);
 	offset = get_file_offset(fp, sizeof(pied->MinorVersion));
 
-	raw = (int)convert_rva_to_raw(*buf, &(ied->Name), 4);
+	raw = (int)convert_rva_to_raw(*buf, &(ied->Name), OPERAND_DWORD);
 	printf("[%08X] - Name[%zdbyte]\t\t\t: %08X(RVA), %08X(RAW), %s\n", offset, sizeof(pied->Name), ied->Name, raw, *buf + raw);
 	offset = get_file_offset(fp, sizeof(pied->Name));
 
@@ -32,13 +32,13 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	printf("[%08X] - NumberOfNames[%zdbyte]\t\t: %08X\n", offset, sizeof(pied->NumberOfNames), pied->NumberOfNames);
 	offset = get_file_offset(fp, sizeof(pied->NumberOfNames));
 
-	printf("[%08X] - AddressOfFunctions[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfFunctions), pied->AddressOfFunctions, (int)convert_rva_to_raw(*buf, &(pied->AddressOfFunctions), 4));
+	printf("[%08X] - AddressOfFunctions[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfFunctions), pied->AddressOfFunctions, (int)convert_rva_to_raw(*buf, &(pied->AddressOfFunctions), OPERAND_DWORD));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfFunctions));
 
-	printf("[%08X] - AddressOfNames[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNames), pied->AddressOfNames, (int)convert_rva_to_raw(*buf, &(pied->AddressOfNames), 4));
+	printf("[%08X] - AddressOfNames[%zdbyte]\t\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNames), pied->AddressOfNames, (int)convert_rva_to_raw(*buf, &(pied->AddressOfNames), OPERAND_DWORD));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfNames));
 
-	printf("[%08X] - AddressOfNameOrdinals[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNameOrdinals), pied->AddressOfNameOrdinals, (int)convert_rva_to_raw(*buf, &(pied->AddressOfNameOrdinals), 4));
+	printf("[%08X] - AddressOfNameOrdinals[%zdbyte]\t: %08X(RVA), %08X(RAW)\n", offset, sizeof(pied->AddressOfNameOrdinals), pied->AddressOfNameOrdinals, (int)convert_rva_to_raw(*buf, &(pied->AddressOfNameOrdinals), OPERAND_DWORD));
 	offset = get_file_offset(fp, sizeof(pied->AddressOfNameOrdinals));
 
 	printf("\n----------------------------------------\n\n");
@@ -52,19 +52,19 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 	printf("-------------------------------------------------\n\n");
 
 	// EXPORT 함수 이름들 실제 RAW 위치
-	raw = (int)convert_rva_to_raw(*buf, &(pied->Name), 4);
+	raw = (int)convert_rva_to_raw(*buf, &(pied->Name), OPERAND_DWORD);
 	char* offset_export_func_names = (char*)(*buf + raw + (strlen(*buf + raw) + 1));
 
 	// 이름 배열의 주소(이름 배열에 있는 각 4byte RVA 값들을 가리키기 위해)
-	raw = (int)convert_rva_to_raw(*buf, &(pied->AddressOfNames), 4);
+	raw = (int)convert_rva_to_raw(*buf, &(pied->AddressOfNames), OPERAND_DWORD);
 	DWORD *pnames =(DWORD*)(*buf + raw);
 
 	// ordinals
-	raw = (int)convert_rva_to_raw(*buf, &(pied->AddressOfNameOrdinals), 4);
+	raw = (int)convert_rva_to_raw(*buf, &(pied->AddressOfNameOrdinals), OPERAND_DWORD);
 	WORD* pordinals = (WORD*)(*buf + raw);
 
 	// function
-	raw = (int)convert_rva_to_raw(*buf, &(pied->AddressOfFunctions), 4);
+	raw = (int)convert_rva_to_raw(*buf, &(pied->AddressOfFunctions), OPERAND_DWORD);
 	DWORD* pfunctions = (DWORD*)(*buf + raw);
 
 	// Export 함수 이름 배열(RAW)의 주소를 백업하여 사용
@@ -81,7 +81,7 @@ int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY*
 		{
 			// VirtualOfNames RAW 주소에 있는 RVA 값들을 raw로 변환하여 해당 위치에 있는 문자열이
 			// EXPORT 함수들의 이름 배열(RAW)에 있는 문자열과 일치한지 검사
-			raw = (int)convert_rva_to_raw(*buf, ppnames, 4);
+			raw = (int)convert_rva_to_raw(*buf, ppnames, OPERAND_DWORD);
 			if (!strcmp(p_offset_export_func_names, *buf + raw))
 			{
 				n_index = j;

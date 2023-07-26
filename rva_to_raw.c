@@ -1,13 +1,13 @@
 #include "header.h"
 
-/*size : 넘겨지는 값에 따라 rva 값을 유동적으로 처리하기 위함*/
-ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t size)
+/*operand_type : 넘겨지는 값에 따라 rva 값을 유동적으로 처리하기 위함*/
+ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, operand operand_type)
 {
 	IMAGE_DOS_HEADER* idh = (IMAGE_DOS_HEADER*)binary_buf;
 
-	switch (size)
+	switch (operand_type)
 	{
-	case 4: 
+	case OPERAND_DWORD:
 		{
 			DWORD raw;
 			IMAGE_NT_HEADERS32* rtr_inh32 = (IMAGE_NT_HEADERS32*)(binary_buf + idh->e_lfanew);
@@ -16,7 +16,7 @@ ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t s
 			for (int i = 0; i < rtr_inh32->FileHeader.NumberOfSections; i++, rtr_ish++)
 			{
 				// rva 값이 현재 section의 max치 메모리 값 이상이거나 min치 메모리 값보다 작으면 진행하지 않고 for문으로 되돌아간다.
-				if (*(DWORD*)rva_value >= rtr_ish->VirtualAddress && *(unsigned long*)rva_value < (rtr_ish->VirtualAddress + rtr_ish->Misc.VirtualSize))
+				if (*(DWORD*)rva_value >= rtr_ish->VirtualAddress && *(DWORD*)rva_value < (rtr_ish->VirtualAddress + rtr_ish->Misc.VirtualSize))
 				{
 
 					raw = *(DWORD*)rva_value - rtr_ish->VirtualAddress + rtr_ish->PointerToRawData;
@@ -25,7 +25,7 @@ ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t s
 			}
 			break;
 		}
-	case 8:
+	case OPERAND_ULONGLONG:
 		{
 			ULONGLONG raw;
 			IMAGE_NT_HEADERS64* rtr_inh64 = (IMAGE_NT_HEADERS64*)(binary_buf + idh->e_lfanew);
@@ -34,7 +34,7 @@ ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t s
 			for (int i = 0; i < rtr_inh64->FileHeader.NumberOfSections; i++, rtr_ish++)
 			{
 				// rva 값이 현재 section의 max치 메모리 값 이상이거나 min치 메모리 값보다 작으면 진행하지 않고 for문으로 되돌아간다.
-				if (*(DWORD*)rva_value >= rtr_ish->VirtualAddress && *(unsigned long*)rva_value < (rtr_ish->VirtualAddress + rtr_ish->Misc.VirtualSize))
+				if (*(ULONGLONG*)rva_value >= rtr_ish->VirtualAddress && *(ULONGLONG*)rva_value < (rtr_ish->VirtualAddress + rtr_ish->Misc.VirtualSize))
 				{
 
 					raw = *(ULONGLONG*)rva_value - rtr_ish->VirtualAddress + rtr_ish->PointerToRawData;
@@ -49,6 +49,7 @@ ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, size_t s
 }
 
 // x86을 위한 용도
+/*
 DWORD rva_to_raw_dword(FILE* fp, u_char** binary_buf, DWORD rva_value)
 {
 	int raw;
@@ -70,8 +71,10 @@ DWORD rva_to_raw_dword(FILE* fp, u_char** binary_buf, DWORD rva_value)
 
 	return -1;
 }
+*/
 
 // image_import_descriptor를 출력할 때 사용한다.
+/*
 ULONGLONG rva_to_raw_ulonglong(FILE* fp, u_char** binary_buf, ULONGLONG rva_value)
 {
 	ULONGLONG raw;
@@ -93,4 +96,4 @@ ULONGLONG rva_to_raw_ulonglong(FILE* fp, u_char** binary_buf, ULONGLONG rva_valu
 
 	return -1;
 }
-
+*/

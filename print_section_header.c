@@ -6,7 +6,6 @@ void print_section_header(FILE* fp, IMAGE_SECTION_HEADER* ish, WORD section_num)
 	printf("Number of Section : %d\n\n", section_num);
 	for (int i = 0; i < section_num; i++, ish++)
 	{
-		//printf("%p\n", ish);
 		printf("[%08X] - Section Name\t\t: %s\n", offset, ish->Name);
 		offset = get_file_offset(fp, sizeof(ish->Name));
 

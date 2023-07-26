@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 		print_dos_header(file, idh);
 		
 		/* 32bit용 NT Header */
-		print_nt_header32(file, idh, inh32);
+		print_nt_header(file, buf, OPERAND_NT32);
 
 		// print_section_header()에서 for문에 사용될 section 개수 구하기
 		WORD section_num = inh32->FileHeader.NumberOfSections;
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 		printf("========== [IMAGE_IMPORT_DESCRIPTOR] ==========\n\n");
 
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 시작 주소 RVA 값을 RAW로 변환
-		raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[1].VirtualAddress), 4);
+		raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[1].VirtualAddress), OPERAND_DWORD);
 
 		// IMPORT Directory 파일에서의 주소
 		printf("IMPORT DESCRIPTOR\t: 0x%X(RVA), 0x%X(RAW)\n\n", inh32->OptionalHeader.DataDirectory[1].VirtualAddress, raw);
@@ -99,7 +99,7 @@ int main(int argc, char** argv)
 			printf("EXPORT DIRECTORY가 존재하지 않습니다.\n");
 		else
 		{
-			raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[0].VirtualAddress), 4);
+			raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[0].VirtualAddress), OPERAND_DWORD);
 			printf("EXPORT Directory RAW : %08X\n\n", raw);
 
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);
@@ -129,7 +129,7 @@ int main(int argc, char** argv)
 		// 파일 포인터를 NT header 위치로 이동
 		//offset = set_file_offset(file, idh->e_lfanew);
 		/*64bit용 NT Header*/
-		print_nt_header64(file, idh, inh64);
+		print_nt_header(file, buf, OPERAND_NT64);
 
 
 		// 파일 포인터를 Section header 위치로 이동
@@ -143,7 +143,7 @@ int main(int argc, char** argv)
 		/* IMAGE_IMPORT_DESCRIPTOR */
 		printf("==================== [IMAGE_IMPORT_DESCRIPTOR] ====================\n\n");
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 시작 주소 RVA 값을 RAW로 변환
-		raw = (int)convert_rva_to_raw(buf, &(inh64->OptionalHeader.DataDirectory[1].VirtualAddress), 4);
+		raw = (int)convert_rva_to_raw(buf, &(inh64->OptionalHeader.DataDirectory[1].VirtualAddress), OPERAND_DWORD);
 		printf("IMPORT Directory RAW : %X\n\n", raw);
 		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 실제 주소를 지정
 		IMAGE_IMPORT_DESCRIPTOR* iid = (IMAGE_IMPORT_DESCRIPTOR*)(buf + raw);
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
 			printf("EXPORT DIRECTORY가 존재하지 않습니다.\n");
 		else
 		{
-			raw = (int)convert_rva_to_raw(buf, &(inh64->OptionalHeader.DataDirectory[0].VirtualAddress), 4);
+			raw = (int)convert_rva_to_raw(buf, &(inh64->OptionalHeader.DataDirectory[0].VirtualAddress), OPERAND_DWORD);
 			printf("EXPORT Directory RAW : %X\n", raw);
 
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);
