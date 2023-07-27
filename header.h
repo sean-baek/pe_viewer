@@ -33,9 +33,9 @@ int set_file_offset(FILE* fp, int offset);
 int get_file_offset(FILE* fp, int offset);
 
 //int rva_to_raw(FILE* fp, u_char** binary_buf, DWORD rva_value);
-ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, operand operand_type);
 //DWORD rva_to_raw_dword(FILE* fp, u_char** binary_buf, DWORD rva_value);
 //ULONGLONG rva_to_raw_ulonglong(FILE* fp, u_char** binary_buf, ULONGLONG rva_value);
+ULONGLONG convert_rva_to_raw(const u_char* binary_buf, void* rva_value, operand operand_type);
 
 void print_dos_header(FILE* fp, IMAGE_DOS_HEADER* idh);
 void print_nt_header(FILE* fp, unsigned char* buf, operand operand_type);

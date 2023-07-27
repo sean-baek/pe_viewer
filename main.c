@@ -68,26 +68,11 @@ int main(int argc, char** argv)
 
 		// print_section_header()에서 for문에 사용될 section 개수 구하기
 		WORD section_num = inh32->FileHeader.NumberOfSections;
-
 		/* Section header */
 		print_section_header(file, ish, section_num);
 
 		/* IMAGE_IMPORT_DESCRIPTOR */
 		printf("========== [IMAGE_IMPORT_DESCRIPTOR] ==========\n\n");
-
-		/*
-		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 시작 주소 RVA 값을 RAW로 변환
-		raw = (int)convert_rva_to_raw(buf, &(inh32->OptionalHeader.DataDirectory[1].VirtualAddress), OPERAND_DWORD);
-
-		// IMPORT Directory 파일에서의 주소
-		printf("IMPORT DESCRIPTOR\t: 0x%X(RVA), 0x%X(RAW)\n\n", inh32->OptionalHeader.DataDirectory[1].VirtualAddress, raw);
-
-		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 실제 주소를 지정
-		IMAGE_IMPORT_DESCRIPTOR* iid = (IMAGE_IMPORT_DESCRIPTOR*)(buf + raw);
-
-		// IID 구조체 배열의 크기
-		int import_descriptor_size = inh32->OptionalHeader.DataDirectory[1].Size / sizeof(IMAGE_IMPORT_DESCRIPTOR);
-		*/
 
 		// IID 구조체 값 출력
 		//print_image_import_descriptor(file, buf, iid, import_descriptor_size);
@@ -106,8 +91,8 @@ int main(int argc, char** argv)
 			printf("EXPORT Directory RAW : %08X\n\n", raw);
 
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);
-			int export_directory_size = inh32->OptionalHeader.DataDirectory[0].Size / sizeof(IMAGE_EXPORT_DIRECTORY);
-			//offset = set_file_offset(file, raw);
+			// int export_directory_size = inh32->OptionalHeader.DataDirectory[0].Size / sizeof(IMAGE_EXPORT_DIRECTORY);
+
 			print_image_export_directory(file, buf, ied);
 		}
 		printf("\n==============================================\n\n");
@@ -120,23 +105,15 @@ int main(int argc, char** argv)
 
 		printf("\n64bit Program\n\n");
 
-
 		// 파일의 크기가 몇인지 출력
 		printf("File Size : %d byte\n\n", file_size);
-
 
 		/* dos header */
 		print_dos_header(file, idh);
 
-
-		// 파일 포인터를 NT header 위치로 이동
-		//offset = set_file_offset(file, idh->e_lfanew);
 		/*64bit용 NT Header*/
 		print_nt_header(file, buf, OPERAND_NT64);
 
-
-		// 파일 포인터를 Section header 위치로 이동
-		//offset = set_file_offset(file, idh->e_lfanew + sizeof(inh64->Signature) + sizeof(inh64->FileHeader) + inh64->FileHeader.SizeOfOptionalHeader);
 		// print_section_header()에서 for문에 사용될 section 개수 구하기
 		WORD section_num = inh64->FileHeader.NumberOfSections;
 		/* Section header */
@@ -145,22 +122,6 @@ int main(int argc, char** argv)
 
 		/* IMAGE_IMPORT_DESCRIPTOR */
 		printf("==================== [IMAGE_IMPORT_DESCRIPTOR] ====================\n\n");
-		
-		/*
-		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 시작 주소 RVA 값을 RAW로 변환
-		raw = (int)convert_rva_to_raw(buf, &(inh64->OptionalHeader.DataDirectory[1].VirtualAddress), OPERAND_DWORD);
-		printf("IMPORT Directory RAW : %X\n\n", raw);
-		
-		// IMAGE_IMPORT_DESCRIPTOR 구조체 배열의 실제 주소를 지정
-		IMAGE_IMPORT_DESCRIPTOR* iid = (IMAGE_IMPORT_DESCRIPTOR*)(buf + raw);
-		
-		// IID 구조체 배열의 크기
-		int import_descriptor_size = inh64->OptionalHeader.DataDirectory[1].Size / sizeof(IMAGE_DATA_DIRECTORY);
-		
-		// IID 구조체 값 출력
-		//offset = set_file_offset(file, raw);
-		*/
-
 
 		//print_image_import_descriptor(file, buf, iid, import_descriptor_size);
 		print_image_import_descriptor(file, buf, OPERAND_IID64);
@@ -179,8 +140,6 @@ int main(int argc, char** argv)
 
 			IMAGE_EXPORT_DIRECTORY* ied = (IMAGE_EXPORT_DIRECTORY*)(buf + raw);
 			//int export_directory_size = inh64->OptionalHeader.DataDirectory[0].Size / sizeof(IMAGE_EXPORT_DIRECTORY);
-			int export_directory_size = inh64->OptionalHeader.DataDirectory[0].Size / sizeof(IMAGE_EXPORT_DIRECTORY);
-			//offset = set_file_offset(file, raw);
 			print_image_export_directory(file, buf, ied);
 		}
 		printf("\n==============================================\n\n");
