@@ -1,9 +1,7 @@
 # ISSUE
 
 -> rva_to_raw 함수의 3번째 인자가 기본적으로 DWORD이지만 IAT 부분에서 ULONGLONG으로 받아야 할 때가 있어서
-
         => Q : rva_to_raw_dword와 rva_to_raw_ulonglong 함수로 나눠서 사용하지만 3번째 인자를 void형 pointer로 받아 사용할 수 있지 않을까 한다.
-        
         => A : convert_rva_to_raw 함수를 만들었고, 이 함수는 4byte인지 8byte인지 인자값에 따라 다르게 처리한다.
         호출할 때 반환 자료형 부분에 대해 명시적 형변환을 해줘야 한다.
 ---
@@ -29,19 +27,20 @@
 
 ---
 
-# Info
+# 중요 구조체 멤버
 
 ## dos header
-dos header → e_magic
-dos header → e_lfanew
+- dos header → e_magic, e_lfanew
 
 ## nt header
-nt header → signature
-nt header → file header → machine, NumberOfSections, SizeOfOptionalHEader, Characteristics
-nt header → optional header → magic, AddressOfEntryPoint, ImageBase, SizeOfimage, SizeOfHeader, Subsystem, NumberOfRvaAndSizes, DataDirectory
+- nt header → signature
+
+- nt header → file header → machine, NumberOfSections, SizeOfOptionalHEader, Characteristics
+
+- nt header → optional header → magic, AddressOfEntryPoint, ImageBase, SizeOfimage, SizeOfHeader, Subsystem, NumberOfRvaAndSizes, DataDirectory
 
 ## Section header
-section header → VirtualSize, VirtualAddress, PointerToRawData, Characteristics
+- section header → VirtualSize, VirtualAddress, PointerToRawData, Characteristics
 
 ---
 
@@ -81,10 +80,13 @@ RAW : RVA - VirtualAddress + PointerToRawData
     4byte RVA 값들이 배열되어 있는데 해당 RVA 값들을 RAW로 바꾼 값에 위치한 문자열과
     1번에서 구한 RAW 주소에 위치한 문자열을 strcmp로 비교하여 맞을 때까지 반복문을 돌려 name_index를 가져온다.
 
-    3. name_index를 성공적으로 가져왔다면 IMAGE_EXPORT_DIRECTORY 구조체에서 AddressOfNameOrdinals의 값(RVA)을
+    3-1. name_index를 성공적으로 가져왔다면 IMAGE_EXPORT_DIRECTORY 구조체에서 AddressOfNameOrdinals의 값(RVA)을
     RAW로 바꾸고 해당 위치로부터 name_index * 2 만큼 떨어진 위치에 있는 값인 ordinal을 구한다.
     (즉, AddfressOfNameOrdinals[name_index])
     
+    3-2. name_index를 가져오는 데 실패했다면, i의 값에 1을 빼 반복문이 함수 이름의 개수만큼 반복할 수 있도록 증가시키지 않고
+    continue로 이후 구문들을 실행하지 않고 다시 i를 이용하는 반복문이 반복하도록 한다.
+
     4. ordinal을 성공적으로 가져왔다면 IMAGE_EXPORT_DIRECTORY 구조체에서 AddressOfFunctions의 값(RVA)을
     RAW로 바꾸고 해당 위치로부터 ordinal * 4 만큼 떨어진 위치에 있는 값인 EXPORT 함수의 주소(RVA)를 구한다.
 

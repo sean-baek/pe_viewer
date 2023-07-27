@@ -19,7 +19,9 @@ typedef enum
     OPERAND_NT32,
     OPERAND_NT64,
     OPERAND_NT32_DATADIRECTORY,
-    OPERAND_NT64_DATADIRECTORY
+    OPERAND_NT64_DATADIRECTORY,
+    OPERAND_IID32,
+    OPERAND_IID64
 } operand;
 
 // 파일 사이즈를 구한다.
@@ -42,6 +44,7 @@ void print_section_header(FILE* fp, IMAGE_SECTION_HEADER* ish, WORD section_num)
 //void print_inh32_datadirectory(FILE* fp, IMAGE_NT_HEADERS32* inh32);
 //void print_inh64_datadirectory(FILE* fp, IMAGE_NT_HEADERS64* inh64);
 
-void print_image_import_descriptor(FILE* fp, u_char* buf, IMAGE_IMPORT_DESCRIPTOR* iid, int size);
-int print_image_export_directory(FILE* fp, u_char** buf, IMAGE_EXPORT_DIRECTORY* ied);
+//void print_image_import_descriptor(FILE* fp, u_char* buf, IMAGE_IMPORT_DESCRIPTOR* iid, int size);
+void print_image_import_descriptor(FILE* fp, u_char* buf, operand operand_type);
+int print_image_export_directory(FILE* fp, u_char* buf, IMAGE_EXPORT_DIRECTORY* ied);
 
