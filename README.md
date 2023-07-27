@@ -73,7 +73,7 @@ RAW : RVA - VirtualAddress + PointerToRawData
 
 ---
 
-# EAT 부분 알고리즘(설명 수정 필요)
+# EAT 부분 알고리즘
 
     1. EXPORT 함수 이름들이 적힌 RAW 주소 부분을 구한다.
     (EXPORT하는 라이브러리 이름 뒤에부터가 시작 부분이다.)
